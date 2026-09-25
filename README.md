@@ -20,8 +20,7 @@
 
 <div align="center">
 
-<img src="https://github-readme-stats.vercel.app/api?username=Hanish-commits&show_icons=true&theme=tokyonight&hide_border=true&count_private=true" width="48%" />
-<img src="https://github-readme-streak-stats.herokuapp.com/?user=Hanish-commits&theme=tokyonight&hide_border=true" width="48%" />
+<img src="https://raw.githubusercontent.com/Hanish-commits/Hanish-commits/main/assets/orbit_stats.svg" width="100%" />
 
 </div>
 
