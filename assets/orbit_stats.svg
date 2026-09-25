@@ -1,0 +1,25 @@
+<svg width="900" height="440" viewBox="0 0 900 440" xmlns="http://www.w3.org/2000/svg">
+<rect width="900" height="440" rx="16" fill="#0d1117"/>
+<circle cx="450" cy="220" r="34" fill="#161b22" stroke="#00F5D4" stroke-width="2"/>
+<text x="450" y="226" font-family="Fira Code, monospace" font-size="13" fill="#E6EDF3" text-anchor="middle">Hanish</text>
+<circle cx="450" cy="220" r="90" fill="none" stroke="#00F5D4" stroke-width="1" opacity="0.25" stroke-dasharray="4 4"/>
+<circle cx="450.0" cy="130.0" r="30" fill="#00F5D4" opacity="0.15"/>
+<circle cx="450.0" cy="130.0" r="30" fill="none" stroke="#00F5D4" stroke-width="2"/>
+<text x="450.0" y="135.0" font-family="Fira Code, monospace" font-size="16" font-weight="700" fill="#00F5D4" text-anchor="middle">4</text>
+<text x="450.0" y="85.0" font-family="Fira Code, monospace" font-size="12" fill="#8B949E" text-anchor="middle">Contributions</text>
+<circle cx="450" cy="220" r="130" fill="none" stroke="#00B8D9" stroke-width="1" opacity="0.25" stroke-dasharray="4 4"/>
+<circle cx="580.0" cy="220.0" r="30" fill="#00B8D9" opacity="0.15"/>
+<circle cx="580.0" cy="220.0" r="30" fill="none" stroke="#00B8D9" stroke-width="2"/>
+<text x="580.0" y="225.0" font-family="Fira Code, monospace" font-size="16" font-weight="700" fill="#00B8D9" text-anchor="middle">2</text>
+<text x="580.0" y="175.0" font-family="Fira Code, monospace" font-size="12" fill="#8B949E" text-anchor="middle">Repositories</text>
+<circle cx="450" cy="220" r="90" fill="none" stroke="#7C5CFC" stroke-width="1" opacity="0.25" stroke-dasharray="4 4"/>
+<circle cx="450.0" cy="310.0" r="30" fill="#7C5CFC" opacity="0.15"/>
+<circle cx="450.0" cy="310.0" r="30" fill="none" stroke="#7C5CFC" stroke-width="2"/>
+<text x="450.0" y="315.0" font-family="Fira Code, monospace" font-size="16" font-weight="700" fill="#7C5CFC" text-anchor="middle">0</text>
+<text x="450.0" y="360.0" font-family="Fira Code, monospace" font-size="12" fill="#8B949E" text-anchor="middle">Stars Earned</text>
+<circle cx="450" cy="220" r="130" fill="none" stroke="#FF6B9D" stroke-width="1" opacity="0.25" stroke-dasharray="4 4"/>
+<circle cx="320.0" cy="220.0" r="30" fill="#FF6B9D" opacity="0.15"/>
+<circle cx="320.0" cy="220.0" r="30" fill="none" stroke="#FF6B9D" stroke-width="2"/>
+<text x="320.0" y="225.0" font-family="Fira Code, monospace" font-size="16" font-weight="700" fill="#FF6B9D" text-anchor="middle">0</text>
+<text x="320.0" y="270.0" font-family="Fira Code, monospace" font-size="12" fill="#8B949E" text-anchor="middle">Followers</text>
+</svg>

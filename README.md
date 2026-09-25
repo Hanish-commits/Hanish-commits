@@ -44,6 +44,16 @@
 
 ### 🧭 Learning Progress
 <!-- CHAPTER-TRACKER-START -->
-This section is regenerated automatically from the DataScienceBy-Hanish repo (built in the next step).
+`████████████████████` **Fundamentals** (13 files)
+
+`███████████████░░░░░` **Working With Data** (10 files)
+
+`████████████░░░░░░░░` **Control Flow** (8 files)
+
+`███████████████░░░░░` **Functions** (10 files)
+
+`██░░░░░░░░░░░░░░░░░░` **Practice Solutions** (1 files)
+
+`███░░░░░░░░░░░░░░░░░` **Intermediate Python** (2 files)
 <!-- CHAPTER-TRACKER-END -->
 </div>
