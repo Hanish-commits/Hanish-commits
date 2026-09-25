@@ -1,0 +1,22 @@
+<svg width="900" height="180" viewBox="0 0 900 180" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgLight" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#F0F3F6"/>
+    </linearGradient>
+    <linearGradient id="accentLight" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0AA398"/>
+      <stop offset="100%" stop-color="#0969DA"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="180" rx="14" fill="url(#bgLight)" stroke="#D0D7DE" stroke-width="1"/>
+  <rect x="0" y="0" width="900" height="6" fill="url(#accentLight)"/>
+  <text x="50" y="80" font-family="Fira Code, monospace" font-size="34" fill="#1F2328" font-weight="700">
+    DataScienceBy Hanish
+  </text>
+  <text x="50" y="120" font-family="Fira Code, monospace" font-size="18" fill="#57606A">
+    Chapter-style Python &amp; Data Science, logged one commit at a time
+  </text>
+  <circle cx="820" cy="90" r="45" fill="none" stroke="url(#accentLight)" stroke-width="3" opacity="0.5"/>
+  <circle cx="820" cy="90" r="30" fill="none" stroke="url(#accentLight)" stroke-width="2" opacity="0.3"/>
+</svg>
