@@ -12,10 +12,13 @@
   <rect width="900" height="180" rx="14" fill="url(#bgLight)" stroke="#D0D7DE" stroke-width="1"/>
   <rect x="0" y="0" width="900" height="6" fill="url(#accentLight)"/>
   <text x="50" y="80" font-family="Fira Code, monospace" font-size="34" fill="#1F2328" font-weight="700">
-    DataScienceBy Hanish
+    DataScience(Hanish)
   </text>
   <text x="50" y="120" font-family="Fira Code, monospace" font-size="18" fill="#57606A">
-    Chapter-style Python &amp; Data Science, logged one commit at a time
+    A function that never stops calling itself
+  </text>
+  <text x="50" y="145" font-family="Fira Code, monospace" font-size="18" fill="#8B949E">
+    Logging every commit on the road from beginner to builder.
   </text>
   <circle cx="820" cy="90" r="45" fill="none" stroke="url(#accentLight)" stroke-width="3" opacity="0.5"/>
   <circle cx="820" cy="90" r="30" fill="none" stroke="url(#accentLight)" stroke-width="2" opacity="0.3"/>
