@@ -69,57 +69,80 @@ def fetch_user_stats():
 
 def build_orbit_svg(stats):
     """
-    Terminal-window design: a mock macOS-style terminal printing
-    live stats as command output. Matches the Fira Code typing header.
+    'Signal Pulse' design: glowing animated bars growing in on load,
+    bold gradient numbers, pulsing accent dots. Built for visual punch.
     """
-    lines = [
-        ("$ whoami", "#8B949E"),
-        ("Hanish", "#E6EDF3"),
-        ("", ""),
-        ("$ git log --oneline --all | wc -l", "#8B949E"),
-        (f"{stats['contributions']} contributions", "#00F5D4"),
-        ("", ""),
-        ("$ ls repos/ | wc -l", "#8B949E"),
-        (f"{stats['repos']} repositories", "#00B8D9"),
-        ("", ""),
-        ("$ git shortlog -s | grep stars", "#8B949E"),
-        (f"{stats['stars']} stars earned", "#7C5CFC"),
-        ("", ""),
-        ("$ curl api.github.com/followers", "#8B949E"),
-        (f"{stats['followers']} followers", "#FF6B9D"),
+    metrics = [
+        ("CONTRIBUTIONS", stats["contributions"], "#00F5D4", "#00B8D9"),
+        ("REPOSITORIES", stats["repos"], "#7C5CFC", "#B18CFF"),
+        ("STARS EARNED", stats["stars"], "#FF6B9D", "#FFB3C6"),
+        ("FOLLOWERS", stats["followers"], "#FFD166", "#FFE8A3"),
     ]
 
     width, height = 900, 420
+    max_val = max((m[1] for m in metrics), default=1) or 1
+
     svg_parts = [
         f'<svg width="{width}" height="{height}" viewBox="0 0 {width} {height}" xmlns="http://www.w3.org/2000/svg">',
-        f'<rect width="{width}" height="{height}" rx="12" fill="#0d1117" stroke="#30363d" stroke-width="1"/>',
-        f'<rect width="{width}" height="40" rx="12" fill="#161b22"/>',
-        f'<rect y="28" width="{width}" height="12" fill="#161b22"/>',
-        '<circle cx="28" cy="20" r="7" fill="#FF5F56"/>',
-        '<circle cx="52" cy="20" r="7" fill="#FFBD2E"/>',
-        '<circle cx="76" cy="20" r="7" fill="#27C93F"/>',
-        f'<text x="{width/2}" y="25" font-family="Fira Code, monospace" font-size="13" '
-        f'fill="#8B949E" text-anchor="middle">hanish@github: ~/dashboard</text>',
+        "<defs>",
+        '<filter id="glow" x="-50%" y="-50%" width="200%" height="200%">',
+        '<feGaussianBlur stdDeviation="6" result="blur"/>',
+        '<feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>',
+        "</filter>",
     ]
+    for i, (label, value, c1, c2) in enumerate(metrics):
+        svg_parts.append(
+            f'<linearGradient id="grad{i}" x1="0" y1="0" x2="1" y2="0">'
+            f'<stop offset="0%" stop-color="{c1}"/><stop offset="100%" stop-color="{c2}"/>'
+            f"</linearGradient>"
+        )
+    svg_parts.append("</defs>")
 
-    y = 80
-    for text, color in lines:
-        if text:
-            svg_parts.append(
-                f'<text x="40" y="{y}" font-family="Fira Code, monospace" font-size="17" '
-                f'fill="{color}">{text}</text>'
-            )
-        y += 26
-
+    svg_parts.append(f'<rect width="{width}" height="{height}" rx="16" fill="#0a0e14"/>')
     svg_parts.append(
-        f'<rect x="40" y="{y-18}" width="10" height="20" fill="#00F5D4">'
-        f'<animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>'
-        f'</rect>'
+        f'<text x="40" y="55" font-family="Fira Code, monospace" font-size="22" '
+        f'font-weight="700" fill="#E6EDF3">Hanish — Live Signal</text>'
     )
+    svg_parts.append(
+        '<circle cx="850" cy="47" r="6" fill="#00F5D4" filter="url(#glow)">'
+        '<animate attributeName="opacity" values="1;0.3;1" dur="1.6s" repeatCount="indefinite"/>'
+        "</circle>"
+    )
+
+    bar_x = 220
+    bar_max_w = 600
+    bar_h = 34
+    gap = 78
+    start_y = 100
+
+    for i, (label, value, c1, c2) in enumerate(metrics):
+        y = start_y + i * gap
+        target_w = max(20, (value / max_val) * bar_max_w)
+
+        svg_parts.append(
+            f'<text x="40" y="{y + bar_h/2 + 5}" font-family="Fira Code, monospace" font-size="13" '
+            f'fill="#8B949E" letter-spacing="1">{label}</text>'
+        )
+        svg_parts.append(
+            f'<rect x="{bar_x}" y="{y}" width="{bar_max_w}" height="{bar_h}" rx="8" fill="#161b22"/>'
+        )
+        bar = (
+            f'<rect x="{bar_x}" y="{y}" width="0" height="{bar_h}" rx="8" '
+            f'fill="url(#grad{i})" filter="url(#glow)">'
+            f'<animate attributeName="width" from="0" to="{target_w:.1f}" '
+            f'dur="1.2s" begin="{i*0.15}s" fill="freeze" calcMode="spline" '
+            f'keySplines="0.16 1 0.3 1"/>'
+            f"</rect>"
+        )
+        svg_parts.append(bar)
+        svg_parts.append(
+            f'<text x="{bar_x + bar_max_w + 20}" y="{y + bar_h/2 + 6}" '
+            f'font-family="Fira Code, monospace" font-size="20" font-weight="700" '
+            f'fill="{c1}">{value}</text>'
+        )
 
     svg_parts.append("</svg>")
     return "\n".join(svg_parts)
-
 
 def fetch_diary_structure():
     """Recursively scan DataScienceBy-Hanish for real chapter progress."""
