@@ -67,53 +67,55 @@ def fetch_user_stats():
         "contributions": total_contributions,
     }
 
-
 def build_orbit_svg(stats):
     """
-    Original design: four stat 'planets' orbiting a central core,
-    at alternating orbit distances. Nothing templated - hand-built layout.
+    Terminal-window design: a mock macOS-style terminal printing
+    live stats as command output. Matches the Fira Code typing header.
     """
-    metrics = [
-        ("Contributions", stats["contributions"], "#00F5D4"),
-        ("Repositories", stats["repos"], "#00B8D9"),
-        ("Stars Earned", stats["stars"], "#7C5CFC"),
-        ("Followers", stats["followers"], "#FF6B9D"),
+    lines = [
+        ("$ whoami", "#8B949E"),
+        ("Hanish", "#E6EDF3"),
+        ("", ""),
+        ("$ git log --oneline --all | wc -l", "#8B949E"),
+        (f"{stats['contributions']} contributions", "#00F5D4"),
+        ("", ""),
+        ("$ ls repos/ | wc -l", "#8B949E"),
+        (f"{stats['repos']} repositories", "#00B8D9"),
+        ("", ""),
+        ("$ git shortlog -s | grep stars", "#8B949E"),
+        (f"{stats['stars']} stars earned", "#7C5CFC"),
+        ("", ""),
+        ("$ curl api.github.com/followers", "#8B949E"),
+        (f"{stats['followers']} followers", "#FF6B9D"),
     ]
 
-    cx, cy = 450, 220
-    radius_base = 90
+    width, height = 900, 420
     svg_parts = [
-        f'<svg width="900" height="440" viewBox="0 0 900 440" xmlns="http://www.w3.org/2000/svg">',
-        '<rect width="900" height="440" rx="16" fill="#0d1117"/>',
-        f'<circle cx="{cx}" cy="{cy}" r="34" fill="#161b22" stroke="#00F5D4" stroke-width="2"/>',
-        f'<text x="{cx}" y="{cy+6}" font-family="Fira Code, monospace" font-size="13" '
-        f'fill="#E6EDF3" text-anchor="middle">Hanish</text>',
+        f'<svg width="{width}" height="{height}" viewBox="0 0 {width} {height}" xmlns="http://www.w3.org/2000/svg">',
+        f'<rect width="{width}" height="{height}" rx="12" fill="#0d1117" stroke="#30363d" stroke-width="1"/>',
+        f'<rect width="{width}" height="40" rx="12" fill="#161b22"/>',
+        f'<rect y="28" width="{width}" height="12" fill="#161b22"/>',
+        '<circle cx="28" cy="20" r="7" fill="#FF5F56"/>',
+        '<circle cx="52" cy="20" r="7" fill="#FFBD2E"/>',
+        '<circle cx="76" cy="20" r="7" fill="#27C93F"/>',
+        f'<text x="{width/2}" y="25" font-family="Fira Code, monospace" font-size="13" '
+        f'fill="#8B949E" text-anchor="middle">hanish@github: ~/dashboard</text>',
     ]
 
-    n = len(metrics)
-    for i, (label, value, color) in enumerate(metrics):
-        angle = (2 * math.pi / n) * i - math.pi / 2
-        orbit_r = radius_base + (i % 2) * 40
-        x = cx + orbit_r * math.cos(angle)
-        y = cy + orbit_r * math.sin(angle)
+    y = 80
+    for text, color in lines:
+        if text:
+            svg_parts.append(
+                f'<text x="40" y="{y}" font-family="Fira Code, monospace" font-size="17" '
+                f'fill="{color}">{text}</text>'
+            )
+        y += 26
 
-        svg_parts.append(
-            f'<circle cx="{cx}" cy="{cy}" r="{orbit_r}" fill="none" '
-            f'stroke="{color}" stroke-width="1" opacity="0.25" stroke-dasharray="4 4"/>'
-        )
-        svg_parts.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="30" fill="{color}" opacity="0.15"/>')
-        svg_parts.append(
-            f'<circle cx="{x:.1f}" cy="{y:.1f}" r="30" fill="none" stroke="{color}" stroke-width="2"/>'
-        )
-        svg_parts.append(
-            f'<text x="{x:.1f}" y="{y+5:.1f}" font-family="Fira Code, monospace" font-size="16" '
-            f'font-weight="700" fill="{color}" text-anchor="middle">{value}</text>'
-        )
-        label_y = y + 50 if y > cy else y - 45
-        svg_parts.append(
-            f'<text x="{x:.1f}" y="{label_y:.1f}" font-family="Fira Code, monospace" font-size="12" '
-            f'fill="#8B949E" text-anchor="middle">{label}</text>'
-        )
+    svg_parts.append(
+        f'<rect x="40" y="{y-18}" width="10" height="20" fill="#00F5D4">'
+        f'<animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>'
+        f'</rect>'
+    )
 
     svg_parts.append("</svg>")
     return "\n".join(svg_parts)
