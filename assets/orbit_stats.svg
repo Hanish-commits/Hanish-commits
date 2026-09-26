@@ -1,20 +1,31 @@
 <svg width="900" height="420" viewBox="0 0 900 420" xmlns="http://www.w3.org/2000/svg">
-<rect width="900" height="420" rx="12" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
-<rect width="900" height="40" rx="12" fill="#161b22"/>
-<rect y="28" width="900" height="12" fill="#161b22"/>
-<circle cx="28" cy="20" r="7" fill="#FF5F56"/>
-<circle cx="52" cy="20" r="7" fill="#FFBD2E"/>
-<circle cx="76" cy="20" r="7" fill="#27C93F"/>
-<text x="450.0" y="25" font-family="Fira Code, monospace" font-size="13" fill="#8B949E" text-anchor="middle">hanish@github: ~/dashboard</text>
-<text x="40" y="80" font-family="Fira Code, monospace" font-size="17" fill="#8B949E">$ whoami</text>
-<text x="40" y="106" font-family="Fira Code, monospace" font-size="17" fill="#E6EDF3">Hanish</text>
-<text x="40" y="158" font-family="Fira Code, monospace" font-size="17" fill="#8B949E">$ git log --oneline --all | wc -l</text>
-<text x="40" y="184" font-family="Fira Code, monospace" font-size="17" fill="#00F5D4">7 contributions</text>
-<text x="40" y="236" font-family="Fira Code, monospace" font-size="17" fill="#8B949E">$ ls repos/ | wc -l</text>
-<text x="40" y="262" font-family="Fira Code, monospace" font-size="17" fill="#00B8D9">2 repositories</text>
-<text x="40" y="314" font-family="Fira Code, monospace" font-size="17" fill="#8B949E">$ git shortlog -s | grep stars</text>
-<text x="40" y="340" font-family="Fira Code, monospace" font-size="17" fill="#7C5CFC">0 stars earned</text>
-<text x="40" y="392" font-family="Fira Code, monospace" font-size="17" fill="#8B949E">$ curl api.github.com/followers</text>
-<text x="40" y="418" font-family="Fira Code, monospace" font-size="17" fill="#FF6B9D">0 followers</text>
-<rect x="40" y="426" width="10" height="20" fill="#00F5D4"><animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/></rect>
+<defs>
+<filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+<feGaussianBlur stdDeviation="6" result="blur"/>
+<feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+</filter>
+<linearGradient id="grad0" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#00F5D4"/><stop offset="100%" stop-color="#00B8D9"/></linearGradient>
+<linearGradient id="grad1" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#7C5CFC"/><stop offset="100%" stop-color="#B18CFF"/></linearGradient>
+<linearGradient id="grad2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#FF6B9D"/><stop offset="100%" stop-color="#FFB3C6"/></linearGradient>
+<linearGradient id="grad3" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#FFD166"/><stop offset="100%" stop-color="#FFE8A3"/></linearGradient>
+</defs>
+<rect width="900" height="420" rx="16" fill="#0a0e14"/>
+<text x="40" y="55" font-family="Fira Code, monospace" font-size="22" font-weight="700" fill="#E6EDF3">Hanish — Live Signal</text>
+<circle cx="850" cy="47" r="6" fill="#00F5D4" filter="url(#glow)"><animate attributeName="opacity" values="1;0.3;1" dur="1.6s" repeatCount="indefinite"/></circle>
+<text x="40" y="122.0" font-family="Fira Code, monospace" font-size="13" fill="#8B949E" letter-spacing="1">CONTRIBUTIONS</text>
+<rect x="220" y="100" width="600" height="34" rx="8" fill="#161b22"/>
+<rect x="220" y="100" width="0" height="34" rx="8" fill="url(#grad0)" filter="url(#glow)"><animate attributeName="width" from="0" to="600.0" dur="1.2s" begin="0.0s" fill="freeze" calcMode="spline" keySplines="0.16 1 0.3 1"/></rect>
+<text x="840" y="123.0" font-family="Fira Code, monospace" font-size="20" font-weight="700" fill="#00F5D4">7</text>
+<text x="40" y="200.0" font-family="Fira Code, monospace" font-size="13" fill="#8B949E" letter-spacing="1">REPOSITORIES</text>
+<rect x="220" y="178" width="600" height="34" rx="8" fill="#161b22"/>
+<rect x="220" y="178" width="0" height="34" rx="8" fill="url(#grad1)" filter="url(#glow)"><animate attributeName="width" from="0" to="171.4" dur="1.2s" begin="0.15s" fill="freeze" calcMode="spline" keySplines="0.16 1 0.3 1"/></rect>
+<text x="840" y="201.0" font-family="Fira Code, monospace" font-size="20" font-weight="700" fill="#7C5CFC">2</text>
+<text x="40" y="278.0" font-family="Fira Code, monospace" font-size="13" fill="#8B949E" letter-spacing="1">STARS EARNED</text>
+<rect x="220" y="256" width="600" height="34" rx="8" fill="#161b22"/>
+<rect x="220" y="256" width="0" height="34" rx="8" fill="url(#grad2)" filter="url(#glow)"><animate attributeName="width" from="0" to="20.0" dur="1.2s" begin="0.3s" fill="freeze" calcMode="spline" keySplines="0.16 1 0.3 1"/></rect>
+<text x="840" y="279.0" font-family="Fira Code, monospace" font-size="20" font-weight="700" fill="#FF6B9D">0</text>
+<text x="40" y="356.0" font-family="Fira Code, monospace" font-size="13" fill="#8B949E" letter-spacing="1">FOLLOWERS</text>
+<rect x="220" y="334" width="600" height="34" rx="8" fill="#161b22"/>
+<rect x="220" y="334" width="0" height="34" rx="8" fill="url(#grad3)" filter="url(#glow)"><animate attributeName="width" from="0" to="20.0" dur="1.2s" begin="0.44999999999999996s" fill="freeze" calcMode="spline" keySplines="0.16 1 0.3 1"/></rect>
+<text x="840" y="357.0" font-family="Fira Code, monospace" font-size="20" font-weight="700" fill="#FFD166">0</text>
 </svg>

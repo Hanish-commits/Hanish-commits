@@ -1,3 +1,6 @@
+![Pandas Learning Journey](https://github.com/user-attachments/assets/0bbfdff0-b6e0-41b1-ad20-ec02708a7ba5)
+
+
 <div align="center">
 
 <!-- Animated typing header -->
