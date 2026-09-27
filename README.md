@@ -56,6 +56,6 @@
 
 `██░░░░░░░░░░░░░░░░░░` **Practice Solutions** (1 files)
 
-`███░░░░░░░░░░░░░░░░░` **Intermediate Python** (2 files)
+`██████░░░░░░░░░░░░░░` **Intermediate Python** (4 files)
 <!-- CHAPTER-TRACKER-END -->
 </div>
