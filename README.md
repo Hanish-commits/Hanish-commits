@@ -1,4 +1,5 @@
-![Pandas Learning Journey](https://github.com/user-attachments/assets/0bbfdff0-b6e0-41b1-ad20-ec02708a7ba5)
+![Pandas Learning Journey](<img width="1971" height="1075" alt="Gemini_Generated_Image_s7c7a6s7c7a6s7c7" src="https://github.com/user-attachments/assets/faca840d-47b9-4787-94ef-ebab74f05332" />
+)
 
 
 <div align="center">
