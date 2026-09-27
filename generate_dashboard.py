@@ -174,9 +174,9 @@ def update_readme(tracker_md):
 def _kpi_card(x, y, w, h, label, value, color):
     return f'''
 <rect x="{x}" y="{y}" width="{w}" height="{h}" rx="10" fill="{PALETTE['panel']}" stroke="{PALETTE['border']}"/>
-<text x="{x + w/2}" y="{y + 30}" font-family="Fira Code, monospace" font-size="12"
-      fill="{PALETTE['muted']}" text-anchor="middle" letter-spacing="1">{label}</text>
-<text x="{x + w/2}" y="{y + 62}" font-family="Fira Code, monospace" font-size="30"
+<text x="{x + w/2}" y="{y + 32}" font-family="{FONT_HEAD}" font-size="12" font-weight="600"
+      fill="{PALETTE['muted']}" text-anchor="middle" letter-spacing="0.5">{label}</text>
+<text x="{x + w/2}" y="{y + 65}" font-family="{FONT_MONO}" font-size="30"
       font-weight="700" fill="{color}" text-anchor="middle">{value}</text>
 '''
 
@@ -184,8 +184,8 @@ def _kpi_card(x, y, w, h, label, value, color):
 def _panel_frame(x, y, w, h, title):
     return f'''
 <rect x="{x}" y="{y}" width="{w}" height="{h}" rx="10" fill="{PALETTE['panel']}" stroke="{PALETTE['border']}"/>
-<text x="{x + 20}" y="{y + 30}" font-family="Fira Code, monospace" font-size="15"
-      font-weight="700" fill="{PALETTE['text']}">{title}</text>
+<text x="{x + 20}" y="{y + 32}" font-family="{FONT_HEAD}" font-size="14"
+      font-weight="600" fill="{PALETTE['text']}" letter-spacing="0.3">{title}</text>
 '''
 
 
@@ -271,17 +271,17 @@ def _language_pie_panel(x, y, w, h, languages):
         color = colors[i % len(colors)]
 
         parts.append(
-            f'<path d="M{cx},{cy} L{x1:.1f},{y1:.1f} A{r},{r} 0 {large_arc} 1 '
-            f'{x2:.1f},{y2:.1f} Z" fill="{color}"/>'
+            f'<rect x="{x+w*0.6}" y="{legend_y-11}" width="10" height="10" rx="2" fill="{color}"/>'
         )
         parts.append(
-            f'<rect x="{x+w*0.6}" y="{legend_y-10}" width="10" height="10" fill="{color}"/>'
+            f'<text x="{x+w*0.6+18}" y="{legend_y}" font-family="{FONT_HEAD}" '
+            f'font-size="12" font-weight="500" fill="{PALETTE["text"]}">{lang}</text>'
         )
         parts.append(
-            f'<text x="{x+w*0.6+16}" y="{legend_y}" font-family="Fira Code, monospace" '
-            f'font-size="11" fill="{PALETTE["text"]}">{lang} ({count})</text>'
+            f'<text x="{x+w-16}" y="{legend_y}" font-family="{FONT_MONO}" '
+            f'font-size="12" fill="{PALETTE["muted"]}" text-anchor="end">{count}</text>'
         )
-        legend_y += 20
+        legend_y += 24
         start_angle = end_angle
 
     return "".join(parts)
