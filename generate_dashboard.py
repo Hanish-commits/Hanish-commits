@@ -36,7 +36,8 @@ PALETTE = {
     "accent3": "#FFD166",
     "accent4": "#FF6B9D",
 }
-
+FONT_HEAD = "'Segoe UI', -apple-system, system-ui, sans-serif"
+FONT_MONO = "'JetBrains Mono', 'Fira Code', monospace"
 
 def fetch_user_stats():
     """Pull real numbers straight from the GitHub API - no third-party service."""
@@ -328,9 +329,10 @@ def build_dashboard_svg(stats, topics):
 
     # Header
     parts.append(
-        f'<text x="40" y="46" font-family="Fira Code, monospace" font-size="24" '
-        f'font-weight="700" fill="{PALETTE["text"]}">HANISH — LEARNING ANALYTICS HUB</text>'
+        f'<text x="40" y="46" font-family="{FONT_HEAD}" font-size="24" '
+        f'font-weight="700" fill="{PALETTE["text"]}">Hanish — Learning Analytics Hub</text>'
     )
+    
     parts.append(
         f'<text x="40" y="70" font-family="Fira Code, monospace" font-size="13" '
         f'fill="{PALETTE["muted"]}">Live GitHub stats, chapter progress and activity</text>'
