@@ -13,6 +13,7 @@ Runs inside GitHub Actions, authenticated with the built-in GITHUB_TOKEN.
 
 import os
 import re
+import math
 import requests
 from datetime import datetime
 
@@ -38,6 +39,7 @@ PALETTE = {
 }
 FONT_HEAD = "'Segoe UI', -apple-system, system-ui, sans-serif"
 FONT_MONO = "'JetBrains Mono', 'Fira Code', monospace"
+
 
 def fetch_user_stats():
     """Pull real numbers straight from the GitHub API - no third-party service."""
@@ -251,31 +253,48 @@ def _weekly_bar_panel(x, y, w, h, weekly):
 def _language_pie_panel(x, y, w, h, languages):
     parts = [_panel_frame(x, y, w, h, "LANGUAGE MIX")]
     if not languages:
+        parts.append(
+            f'<text x="{x+20}" y="{y+60}" font-family="Fira Code, monospace" '
+            f'font-size="13" fill="{PALETTE["muted"]}">No language data yet</text>'
+        )
         return "".join(parts)
 
     colors = [PALETTE["accent"], PALETTE["accent2"], PALETTE["accent3"], PALETTE["accent4"], "#5BC0EB"]
     total = sum(languages.values())
-    cx, cy, r = x + w * 0.32, y + h / 2 + 10, min(w, h) / 4.2
+    cx, cy, r = x + w * 0.30, y + h / 2 + 14, min(w, h) / 4.6
 
     start_angle = 0
-    legend_y = y + 45
-    for i, (lang, count) in enumerate(sorted(languages.items(), key=lambda kv: -kv[1])[:5]):
+    legend_y = y + 58
+    top5 = sorted(languages.items(), key=lambda kv: -kv[1])[:5]
+
+    for i, (lang, count) in enumerate(top5):
         frac = count / total
         end_angle = start_angle + frac * 360
         large_arc = 1 if (end_angle - start_angle) > 180 else 0
 
-        import math
         x1 = cx + r * math.cos(math.radians(start_angle - 90))
         y1 = cy + r * math.sin(math.radians(start_angle - 90))
         x2 = cx + r * math.cos(math.radians(end_angle - 90))
         y2 = cy + r * math.sin(math.radians(end_angle - 90))
         color = colors[i % len(colors)]
 
+        # Draw the wedge itself (this was missing before - only the legend
+        # was ever rendered, so no pie shape actually appeared).
+        if len(top5) == 1:
+            parts.append(f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{color}"/>')
+        else:
+            parts.append(
+                f'<path d="M {cx},{cy} L {x1:.2f},{y1:.2f} '
+                f'A {r},{r} 0 {large_arc} 1 {x2:.2f},{y2:.2f} Z" '
+                f'fill="{color}" stroke="{PALETTE["bg"]}" stroke-width="1.5"/>'
+            )
+
+        # Legend
         parts.append(
-            f'<rect x="{x+w*0.6}" y="{legend_y-11}" width="10" height="10" rx="2" fill="{color}"/>'
+            f'<rect x="{x+w*0.58}" y="{legend_y-11}" width="10" height="10" rx="2" fill="{color}"/>'
         )
         parts.append(
-            f'<text x="{x+w*0.6+18}" y="{legend_y}" font-family="{FONT_HEAD}" '
+            f'<text x="{x+w*0.58+18}" y="{legend_y}" font-family="{FONT_HEAD}" '
             f'font-size="12" font-weight="500" fill="{PALETTE["text"]}">{lang}</text>'
         )
         parts.append(
@@ -332,7 +351,7 @@ def build_dashboard_svg(stats, topics):
         f'<text x="40" y="46" font-family="{FONT_HEAD}" font-size="24" '
         f'font-weight="700" fill="{PALETTE["text"]}">Hanish — Learning Analytics Hub</text>'
     )
-    
+
     parts.append(
         f'<text x="40" y="70" font-family="Fira Code, monospace" font-size="13" '
         f'fill="{PALETTE["muted"]}">Live GitHub stats, chapter progress and activity</text>'
