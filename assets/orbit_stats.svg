@@ -15,11 +15,11 @@
 <text x="40" y="122.0" font-family="Fira Code, monospace" font-size="13" fill="#8B949E" letter-spacing="1">CONTRIBUTIONS</text>
 <rect x="220" y="100" width="600" height="34" rx="8" fill="#161b22"/>
 <rect x="220" y="100" width="0" height="34" rx="8" fill="url(#grad0)" filter="url(#glow)"><animate attributeName="width" from="0" to="600.0" dur="1.2s" begin="0.0s" fill="freeze" calcMode="spline" keySplines="0.16 1 0.3 1"/></rect>
-<text x="840" y="123.0" font-family="Fira Code, monospace" font-size="20" font-weight="700" fill="#00F5D4">7</text>
+<text x="840" y="123.0" font-family="Fira Code, monospace" font-size="20" font-weight="700" fill="#00F5D4">29</text>
 <text x="40" y="200.0" font-family="Fira Code, monospace" font-size="13" fill="#8B949E" letter-spacing="1">REPOSITORIES</text>
 <rect x="220" y="178" width="600" height="34" rx="8" fill="#161b22"/>
-<rect x="220" y="178" width="0" height="34" rx="8" fill="url(#grad1)" filter="url(#glow)"><animate attributeName="width" from="0" to="171.4" dur="1.2s" begin="0.15s" fill="freeze" calcMode="spline" keySplines="0.16 1 0.3 1"/></rect>
-<text x="840" y="201.0" font-family="Fira Code, monospace" font-size="20" font-weight="700" fill="#7C5CFC">2</text>
+<rect x="220" y="178" width="0" height="34" rx="8" fill="url(#grad1)" filter="url(#glow)"><animate attributeName="width" from="0" to="103.4" dur="1.2s" begin="0.15s" fill="freeze" calcMode="spline" keySplines="0.16 1 0.3 1"/></rect>
+<text x="840" y="201.0" font-family="Fira Code, monospace" font-size="20" font-weight="700" fill="#7C5CFC">5</text>
 <text x="40" y="278.0" font-family="Fira Code, monospace" font-size="13" fill="#8B949E" letter-spacing="1">STARS EARNED</text>
 <rect x="220" y="256" width="600" height="34" rx="8" fill="#161b22"/>
 <rect x="220" y="256" width="0" height="34" rx="8" fill="url(#grad2)" filter="url(#glow)"><animate attributeName="width" from="0" to="20.0" dur="1.2s" begin="0.3s" fill="freeze" calcMode="spline" keySplines="0.16 1 0.3 1"/></rect>

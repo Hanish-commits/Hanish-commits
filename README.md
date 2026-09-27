@@ -1,4 +1,5 @@
-![Pandas Learning Journey](https://github.com/user-attachments/assets/0bbfdff0-b6e0-41b1-ad20-ec02708a7ba5)
+![Data Science Analytics Hub](https://github.com/user-attachments/assets/faca840d-47b9-4787-94ef-ebab74f05332)
+
 
 
 <div align="center">
@@ -56,6 +57,6 @@
 
 `██░░░░░░░░░░░░░░░░░░` **Practice Solutions** (1 files)
 
-`███░░░░░░░░░░░░░░░░░` **Intermediate Python** (2 files)
+`██████░░░░░░░░░░░░░░` **Intermediate Python** (4 files)
 <!-- CHAPTER-TRACKER-END -->
 </div>
