@@ -1,18 +1,20 @@
 """
 generate_dashboard.py
 
-Pulls live data from the GitHub API and builds two custom, self-owned SVGs:
-  1. assets/orbit_stats.svg   - an original radial stats visual (not a copied badge template)
-  2. Updates the chapter tracker section inside README.md by scanning the
-     DataScienceBy-Hanish repo's real folder/file structure.
+Pulls live data from the GitHub API and builds a KPI-hub style dashboard SVG
+(assets/orbit_stats.svg), plus updates the chapter tracker section inside
+README.md by scanning the DataScienceBy-Hanish repo's real folder structure.
+
+Every number on the dashboard is real, pulled live from the GitHub API -
+no placeholder or fabricated metrics.
 
 Runs inside GitHub Actions, authenticated with the built-in GITHUB_TOKEN.
 """
 
 import os
 import re
-import math
 import requests
+from datetime import datetime
 
 USERNAME = "Hanish-commits"
 DIARY_REPO = "DataScienceBy-Hanish"
@@ -21,6 +23,18 @@ TOKEN = os.environ["GH_TOKEN"]
 HEADERS = {
     "Authorization": f"Bearer {TOKEN}",
     "Accept": "application/vnd.github+json",
+}
+
+PALETTE = {
+    "bg": "#0a0e14",
+    "panel": "#131922",
+    "border": "#1f2733",
+    "text": "#E6EDF3",
+    "muted": "#8B949E",
+    "accent": "#00F5D4",
+    "accent2": "#7C5CFC",
+    "accent3": "#FFD166",
+    "accent4": "#FF6B9D",
 }
 
 
@@ -35,13 +49,15 @@ def fetch_user_stats():
     total_repos = user.get("public_repos", len(repos))
     followers = user.get("followers", 0)
 
-    # Contribution count via GraphQL (more accurate than REST for commit totals)
     query = """
     query($login: String!) {
       user(login: $login) {
         contributionsCollection {
           contributionCalendar {
             totalContributions
+            weeks {
+              contributionDays { contributionCount }
+            }
           }
         }
       }
@@ -52,97 +68,50 @@ def fetch_user_stats():
         json={"query": query, "variables": {"login": USERNAME}},
         headers=HEADERS,
     ).json()
-    total_contributions = (
+    calendar = (
         gql.get("data", {})
         .get("user", {})
         .get("contributionsCollection", {})
         .get("contributionCalendar", {})
-        .get("totalContributions", 0)
     )
+    total_contributions = calendar.get("totalContributions", 0)
+
+    # Last 12 weeks of contribution totals, for the activity bar chart
+    weeks = calendar.get("weeks", [])
+    weekly_totals = [
+        sum(day["contributionCount"] for day in w["contributionDays"])
+        for w in weeks
+    ][-12:]
+
+    # Language mix across public repos, for the pie chart
+    lang_counts = {}
+    for r in repos:
+        lang = r.get("language")
+        if lang:
+            lang_counts[lang] = lang_counts.get(lang, 0) + 1
+
+    # Most recently updated repos, for the activity table
+    recent = sorted(repos, key=lambda r: r.get("updated_at", ""), reverse=True)[:5]
+    recent_rows = [
+        {
+            "name": r["name"],
+            "language": r.get("language") or "-",
+            "stars": r.get("stargazers_count", 0),
+            "updated": r.get("updated_at", "")[:10],
+        }
+        for r in recent
+    ]
 
     return {
         "repos": total_repos,
         "stars": total_stars,
         "followers": followers,
         "contributions": total_contributions,
+        "weekly": weekly_totals,
+        "languages": lang_counts,
+        "recent": recent_rows,
     }
 
-def build_orbit_svg(stats):
-    """
-    'Signal Pulse' design: glowing animated bars growing in on load,
-    bold gradient numbers, pulsing accent dots. Built for visual punch.
-    """
-    metrics = [
-        ("CONTRIBUTIONS", stats["contributions"], "#00F5D4", "#00B8D9"),
-        ("REPOSITORIES", stats["repos"], "#7C5CFC", "#B18CFF"),
-        ("STARS EARNED", stats["stars"], "#FF6B9D", "#FFB3C6"),
-        ("FOLLOWERS", stats["followers"], "#FFD166", "#FFE8A3"),
-    ]
-
-    width, height = 900, 420
-    max_val = max((m[1] for m in metrics), default=1) or 1
-
-    svg_parts = [
-        f'<svg width="{width}" height="{height}" viewBox="0 0 {width} {height}" xmlns="http://www.w3.org/2000/svg">',
-        "<defs>",
-        '<filter id="glow" x="-50%" y="-50%" width="200%" height="200%">',
-        '<feGaussianBlur stdDeviation="6" result="blur"/>',
-        '<feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>',
-        "</filter>",
-    ]
-    for i, (label, value, c1, c2) in enumerate(metrics):
-        svg_parts.append(
-            f'<linearGradient id="grad{i}" x1="0" y1="0" x2="1" y2="0">'
-            f'<stop offset="0%" stop-color="{c1}"/><stop offset="100%" stop-color="{c2}"/>'
-            f"</linearGradient>"
-        )
-    svg_parts.append("</defs>")
-
-    svg_parts.append(f'<rect width="{width}" height="{height}" rx="16" fill="#0a0e14"/>')
-    svg_parts.append(
-        f'<text x="40" y="55" font-family="Fira Code, monospace" font-size="22" '
-        f'font-weight="700" fill="#E6EDF3">Hanish — Live Signal</text>'
-    )
-    svg_parts.append(
-        '<circle cx="850" cy="47" r="6" fill="#00F5D4" filter="url(#glow)">'
-        '<animate attributeName="opacity" values="1;0.3;1" dur="1.6s" repeatCount="indefinite"/>'
-        "</circle>"
-    )
-
-    bar_x = 220
-    bar_max_w = 600
-    bar_h = 34
-    gap = 78
-    start_y = 100
-
-    for i, (label, value, c1, c2) in enumerate(metrics):
-        y = start_y + i * gap
-        target_w = max(20, (value / max_val) * bar_max_w)
-
-        svg_parts.append(
-            f'<text x="40" y="{y + bar_h/2 + 5}" font-family="Fira Code, monospace" font-size="13" '
-            f'fill="#8B949E" letter-spacing="1">{label}</text>'
-        )
-        svg_parts.append(
-            f'<rect x="{bar_x}" y="{y}" width="{bar_max_w}" height="{bar_h}" rx="8" fill="#161b22"/>'
-        )
-        bar = (
-            f'<rect x="{bar_x}" y="{y}" width="0" height="{bar_h}" rx="8" '
-            f'fill="url(#grad{i})" filter="url(#glow)">'
-            f'<animate attributeName="width" from="0" to="{target_w:.1f}" '
-            f'dur="1.2s" begin="{i*0.15}s" fill="freeze" calcMode="spline" '
-            f'keySplines="0.16 1 0.3 1"/>'
-            f"</rect>"
-        )
-        svg_parts.append(bar)
-        svg_parts.append(
-            f'<text x="{bar_x + bar_max_w + 20}" y="{y + bar_h/2 + 6}" '
-            f'font-family="Fira Code, monospace" font-size="20" font-weight="700" '
-            f'fill="{c1}">{value}</text>'
-        )
-
-    svg_parts.append("</svg>")
-    return "\n".join(svg_parts)
 
 def fetch_diary_structure():
     """Recursively scan DataScienceBy-Hanish for real chapter progress."""
@@ -198,15 +167,230 @@ def update_readme(tracker_md):
         f.write(content)
 
 
+# ---------------------------------------------------------------------------
+# SVG dashboard
+# ---------------------------------------------------------------------------
+
+def _kpi_card(x, y, w, h, label, value, color):
+    return f'''
+<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="10" fill="{PALETTE['panel']}" stroke="{PALETTE['border']}"/>
+<text x="{x + w/2}" y="{y + 30}" font-family="Fira Code, monospace" font-size="12"
+      fill="{PALETTE['muted']}" text-anchor="middle" letter-spacing="1">{label}</text>
+<text x="{x + w/2}" y="{y + 62}" font-family="Fira Code, monospace" font-size="30"
+      font-weight="700" fill="{color}" text-anchor="middle">{value}</text>
+'''
+
+
+def _panel_frame(x, y, w, h, title):
+    return f'''
+<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="10" fill="{PALETTE['panel']}" stroke="{PALETTE['border']}"/>
+<text x="{x + 20}" y="{y + 30}" font-family="Fira Code, monospace" font-size="15"
+      font-weight="700" fill="{PALETTE['text']}">{title}</text>
+'''
+
+
+def _progress_panel(x, y, w, h, topics):
+    parts = [_panel_frame(x, y, w, h, "LEARNING PIPELINE")]
+    if not topics:
+        parts.append(
+            f'<text x="{x+20}" y="{y+60}" font-family="Fira Code, monospace" '
+            f'font-size="13" fill="{PALETTE["muted"]}">No chapters detected yet</text>'
+        )
+        return "".join(parts)
+
+    max_count = max(topics.values())
+    row_h = min(46, (h - 60) / max(len(topics), 1))
+    for i, (topic, count) in enumerate(sorted(topics.items())):
+        row_y = y + 55 + i * row_h
+        clean_name = re.sub(r"^\d+[_ ]*", "", topic).replace("_", " ").title()
+        bar_w = (w - 140) * (count / max_count)
+        parts.append(
+            f'<text x="{x+20}" y="{row_y}" font-family="Fira Code, monospace" '
+            f'font-size="12" fill="{PALETTE["text"]}">{clean_name}</text>'
+        )
+        parts.append(
+            f'<rect x="{x+20}" y="{row_y+8}" width="{w-140}" height="8" rx="4" fill="{PALETTE["border"]}"/>'
+        )
+        parts.append(
+            f'<rect x="{x+20}" y="{row_y+8}" width="{bar_w:.1f}" height="8" rx="4" fill="{PALETTE["accent"]}"/>'
+        )
+        parts.append(
+            f'<text x="{x+w-20}" y="{row_y}" font-family="Fira Code, monospace" '
+            f'font-size="12" fill="{PALETTE["muted"]}" text-anchor="end">{count}</text>'
+        )
+    return "".join(parts)
+
+
+def _weekly_bar_panel(x, y, w, h, weekly):
+    parts = [_panel_frame(x, y, w, h, "WEEKLY CONTRIBUTIONS (LAST 12 WEEKS)")]
+    if not weekly:
+        return "".join(parts)
+
+    chart_x, chart_y = x + 20, y + 50
+    chart_w, chart_h = w - 40, h - 80
+    max_val = max(weekly) or 1
+    bar_gap = 8
+    bar_w = (chart_w - bar_gap * (len(weekly) - 1)) / len(weekly)
+
+    for i, val in enumerate(weekly):
+        bar_h = (val / max_val) * chart_h
+        bx = chart_x + i * (bar_w + bar_gap)
+        by = chart_y + chart_h - bar_h
+        parts.append(
+            f'<rect x="{bx:.1f}" y="{by:.1f}" width="{bar_w:.1f}" height="{bar_h:.1f}" '
+            f'rx="3" fill="{PALETTE["accent"]}" opacity="0.85"/>'
+        )
+    parts.append(
+        f'<line x1="{chart_x}" y1="{chart_y+chart_h}" x2="{chart_x+chart_w}" '
+        f'y2="{chart_y+chart_h}" stroke="{PALETTE["border"]}"/>'
+    )
+    return "".join(parts)
+
+
+def _language_pie_panel(x, y, w, h, languages):
+    parts = [_panel_frame(x, y, w, h, "LANGUAGE MIX")]
+    if not languages:
+        return "".join(parts)
+
+    colors = [PALETTE["accent"], PALETTE["accent2"], PALETTE["accent3"], PALETTE["accent4"], "#5BC0EB"]
+    total = sum(languages.values())
+    cx, cy, r = x + w * 0.32, y + h / 2 + 10, min(w, h) / 4.2
+
+    start_angle = 0
+    legend_y = y + 45
+    for i, (lang, count) in enumerate(sorted(languages.items(), key=lambda kv: -kv[1])[:5]):
+        frac = count / total
+        end_angle = start_angle + frac * 360
+        large_arc = 1 if (end_angle - start_angle) > 180 else 0
+
+        import math
+        x1 = cx + r * math.cos(math.radians(start_angle - 90))
+        y1 = cy + r * math.sin(math.radians(start_angle - 90))
+        x2 = cx + r * math.cos(math.radians(end_angle - 90))
+        y2 = cy + r * math.sin(math.radians(end_angle - 90))
+        color = colors[i % len(colors)]
+
+        parts.append(
+            f'<path d="M{cx},{cy} L{x1:.1f},{y1:.1f} A{r},{r} 0 {large_arc} 1 '
+            f'{x2:.1f},{y2:.1f} Z" fill="{color}"/>'
+        )
+        parts.append(
+            f'<rect x="{x+w*0.6}" y="{legend_y-10}" width="10" height="10" fill="{color}"/>'
+        )
+        parts.append(
+            f'<text x="{x+w*0.6+16}" y="{legend_y}" font-family="Fira Code, monospace" '
+            f'font-size="11" fill="{PALETTE["text"]}">{lang} ({count})</text>'
+        )
+        legend_y += 20
+        start_angle = end_angle
+
+    return "".join(parts)
+
+
+def _recent_table_panel(x, y, w, h, rows):
+    parts = [_panel_frame(x, y, w, h, "RECENT ACTIVITY")]
+    header_y = y + 48
+    cols = [("REPO", x + 20), ("LANG", x + w * 0.45), ("STARS", x + w * 0.65), ("UPDATED", x + w * 0.8)]
+    for label, cx in cols:
+        parts.append(
+            f'<text x="{cx}" y="{header_y}" font-family="Fira Code, monospace" '
+            f'font-size="11" fill="{PALETTE["muted"]}">{label}</text>'
+        )
+    for i, row in enumerate(rows):
+        ry = header_y + 26 + i * 24
+        name = row["name"] if len(row["name"]) <= 20 else row["name"][:18] + "…"
+        parts.append(
+            f'<text x="{x+20}" y="{ry}" font-family="Fira Code, monospace" '
+            f'font-size="12" fill="{PALETTE["text"]}">{name}</text>'
+        )
+        parts.append(
+            f'<text x="{x+w*0.45}" y="{ry}" font-family="Fira Code, monospace" '
+            f'font-size="12" fill="{PALETTE["accent"]}">{row["language"]}</text>'
+        )
+        parts.append(
+            f'<text x="{x+w*0.65}" y="{ry}" font-family="Fira Code, monospace" '
+            f'font-size="12" fill="{PALETTE["text"]}">{row["stars"]}</text>'
+        )
+        parts.append(
+            f'<text x="{x+w*0.8}" y="{ry}" font-family="Fira Code, monospace" '
+            f'font-size="12" fill="{PALETTE["muted"]}">{row["updated"]}</text>'
+        )
+    return "".join(parts)
+
+
+def build_dashboard_svg(stats, topics):
+    width, height = 1200, 780
+    parts = [
+        f'<svg width="{width}" height="{height}" viewBox="0 0 {width} {height}" '
+        f'xmlns="http://www.w3.org/2000/svg">',
+        f'<rect width="{width}" height="{height}" rx="14" fill="{PALETTE["bg"]}"/>',
+    ]
+
+    # Header
+    parts.append(
+        f'<text x="40" y="46" font-family="Fira Code, monospace" font-size="24" '
+        f'font-weight="700" fill="{PALETTE["text"]}">HANISH — LEARNING ANALYTICS HUB</text>'
+    )
+    parts.append(
+        f'<text x="40" y="70" font-family="Fira Code, monospace" font-size="13" '
+        f'fill="{PALETTE["muted"]}">Live GitHub stats, chapter progress and activity</text>'
+    )
+
+    # KPI row
+    kpi_y = 95
+    kpi_w = (width - 40 * 2 - 3 * 16) / 4
+    kpis = [
+        ("REPOSITORIES", stats["repos"], PALETTE["accent"]),
+        ("TOTAL STARS", stats["stars"], PALETTE["accent3"]),
+        ("FOLLOWERS", stats["followers"], PALETTE["accent2"]),
+        ("CONTRIBUTIONS", stats["contributions"], PALETTE["accent4"]),
+    ]
+    for i, (label, value, color) in enumerate(kpis):
+        kx = 40 + i * (kpi_w + 16)
+        parts.append(_kpi_card(kx, kpi_y, kpi_w, 90, label, value, color))
+
+    row2_y = kpi_y + 90 + 20
+    row2_h = 300
+
+    # Left: learning pipeline
+    left_w = 360
+    parts.append(_progress_panel(40, row2_y, left_w, row2_h, topics))
+
+    # Middle: weekly bar chart
+    mid_x = 40 + left_w + 20
+    mid_w = 480
+    parts.append(_weekly_bar_panel(mid_x, row2_y, mid_w, row2_h, stats["weekly"]))
+
+    # Right: language pie
+    right_x = mid_x + mid_w + 20
+    right_w = width - right_x - 40
+    parts.append(_language_pie_panel(right_x, row2_y, right_w, row2_h, stats["languages"]))
+
+    # Bottom: recent activity table
+    row3_y = row2_y + row2_h + 20
+    row3_h = height - row3_y - 60
+    parts.append(_recent_table_panel(40, row3_y, width - 80, row3_h, stats["recent"]))
+
+    # Footer
+    parts.append(
+        f'<text x="40" y="{height-20}" font-family="Fira Code, monospace" font-size="11" '
+        f'fill="{PALETTE["muted"]}">Last updated: {datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")}</text>'
+    )
+
+    parts.append("</svg>")
+    return "\n".join(parts)
+
+
 if __name__ == "__main__":
     stats = fetch_user_stats()
-    svg = build_orbit_svg(stats)
+    topics = fetch_diary_structure()
+
+    svg = build_dashboard_svg(stats, topics)
     os.makedirs("assets", exist_ok=True)
     with open("assets/orbit_stats.svg", "w", encoding="utf-8") as f:
         f.write(svg)
 
-    topics = fetch_diary_structure()
     tracker_md = build_tracker_markdown(topics)
     update_readme(tracker_md)
 
-    print("Dashboard updated:", stats, topics)
+    print("Dashboard updated:", {k: v for k, v in stats.items() if k not in ("recent",)})
