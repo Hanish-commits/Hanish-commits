@@ -37,11 +37,9 @@
 
 `███████████████░░░░░` **Working With Data** (10 files)
 
-`████████████░░░░░░░░` **Control Flow** (8 files)
+`███░░░░░░░░░░░░░░░░░` **Conditionals** (2 files)
 
-`███████████████░░░░░` **Functions** (10 files)
-
-`██░░░░░░░░░░░░░░░░░░` **Practice Solutions** (1 files)
+`███░░░░░░░░░░░░░░░░░` **Functions** (2 files)
 
 `██████░░░░░░░░░░░░░░` **Intermediate Python** (4 files)
 <!-- CHAPTER-TRACKER-END -->
