@@ -6,15 +6,9 @@
   <img alt="Hanish Sharma — Learning in public. Building with data." src="https://raw.githubusercontent.com/Hanish-commits/Hanish-commits/main/assets/portfolio-hero-dark.svg" width="100%">
 </picture>
 
-</div>
-
-<div align="center">
-
-[GitHub](https://github.com/Hanish-commits) · [Data science learning repo](https://github.com/Hanish-commits/DataScienceBy-Hanish) · **Python · Data analysis · Learning in public**
+[GitHub](https://github.com/Hanish-commits) · [Data science learning repo](https://github.com/Hanish-commits/DataScienceBy-Hanish) · **Python · Data analysis**
 
 </div>
-
----
 
 ## Live dashboard
 
