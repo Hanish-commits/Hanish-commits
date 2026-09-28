@@ -1,6 +1,12 @@
 name: Update Dashboard
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "generate_dashboard.py"
+      - "assets/hanish-profile.jpg"
+      - ".github/workflows/update-dashboard.yml"
   schedule:
     - cron: "0 3 * * *"
   workflow_dispatch:
@@ -31,6 +37,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add assets/orbit_stats.svg README.md
+          git add assets/orbit_stats.svg assets/portfolio-hero-dark.svg assets/portfolio-hero-light.svg README.md
           git diff --quiet && git diff --staged --quiet || git commit -m "Auto-update dashboard"
           git push
