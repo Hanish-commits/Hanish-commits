@@ -221,7 +221,7 @@ def _panel_frame(x, y, w, h, title):
 
 
 def _progress_panel(x, y, w, h, topics):
-    parts = [_panel_frame(x, y, w, h, "LEARNING PIPELINE")]
+    parts = [_panel_frame(x, y, w, h, "LEARNING PROGRESS")]
     if not topics:
         parts.append(
             f'<text x="{x+20}" y="{y+60}" font-family="Fira Code, monospace" '
@@ -230,24 +230,31 @@ def _progress_panel(x, y, w, h, topics):
         return "".join(parts)
 
     max_count = max(topics.values())
-    row_h = min(46, (h - 60) / max(len(topics), 1))
-    for i, (topic, count) in enumerate(sorted(topics.items())):
-        row_y = y + 55 + i * row_h
+    visible_topics = sorted(topics.items(), key=lambda item: (-item[1], item[0]))[:6]
+    for i, (topic, count) in enumerate(visible_topics):
+        row_y = y + 59 + i * 33
         clean_name = re.sub(r"^\d+[_ ]*", "", topic).replace("_", " ").title()
-        bar_w = (w - 140) * (count / max_count)
+        if len(clean_name) > 30:
+            clean_name = clean_name[:28].rstrip() + "…"
+        bar_w = (w - 76) * (count / max_count)
         parts.append(
-            f'<text x="{x+20}" y="{row_y}" font-family="Fira Code, monospace" '
-            f'font-size="12" fill="{PALETTE["text"]}">{xml(clean_name)}</text>'
+            f'<text x="{x+20}" y="{row_y}" font-family="{FONT_HEAD}" '
+            f'font-size="10" fill="{PALETTE["text"]}">{xml(clean_name)}</text>'
         )
         parts.append(
-            f'<rect x="{x+20}" y="{row_y+8}" width="{w-140}" height="8" rx="4" fill="{PALETTE["border"]}"/>'
+            f'<rect x="{x+20}" y="{row_y+7}" width="{w-76}" height="5" rx="3" fill="{PALETTE["border"]}"/>'
         )
         parts.append(
-            f'<rect x="{x+20}" y="{row_y+8}" width="{bar_w:.1f}" height="8" rx="4" fill="{PALETTE["accent"]}"/>'
+            f'<rect x="{x+20}" y="{row_y+7}" width="{bar_w:.1f}" height="5" rx="3" fill="url(#teal)"/>'
         )
         parts.append(
-            f'<text x="{x+w-20}" y="{row_y}" font-family="Fira Code, monospace" '
-            f'font-size="12" fill="{PALETTE["muted"]}" text-anchor="end">{count}</text>'
+            f'<text x="{x+w-20}" y="{row_y}" font-family="{FONT_MONO}" '
+            f'font-size="9" fill="{PALETTE["muted"]}" text-anchor="end">{count}</text>'
+        )
+    if len(topics) > len(visible_topics):
+        parts.append(
+            f'<text x="{x+20}" y="{y+h-14}" font-family="{FONT_HEAD}" font-size="8" '
+            f'fill="{PALETTE["muted"]}">Showing 6 of {len(topics)} topics · full tracker below</text>'
         )
     return "".join(parts)
 
@@ -289,10 +296,10 @@ def _language_pie_panel(x, y, w, h, languages):
 
     colors = [PALETTE["accent"], PALETTE["accent2"], PALETTE["accent3"], PALETTE["accent4"], "#5BC0EB"]
     total = sum(languages.values())
-    cx, cy, r = x + w * 0.30, y + h / 2 + 14, min(w, h) / 4.6
+    cx, cy, r = x + w * 0.27, y + h / 2 + 8, min(w, h) / 5.6
 
     start_angle = 0
-    legend_y = y + 58
+    legend_y = y + 112
     top5 = sorted(languages.items(), key=lambda kv: -kv[1])[:5]
 
     for i, (lang, count) in enumerate(top5):
@@ -317,19 +324,20 @@ def _language_pie_panel(x, y, w, h, languages):
                 f'fill="{color}" stroke="{PALETTE["bg"]}" stroke-width="1.5"/>'
             )
 
-        # Legend
+        # Compact legend to keep longer language names and counts separated.
+        legend_x = x + w * 0.48
         parts.append(
-            f'<rect x="{x+w*0.58}" y="{legend_y-11}" width="10" height="10" rx="2" fill="{color}"/>'
+            f'<rect x="{legend_x}" y="{legend_y-8}" width="8" height="8" rx="2" fill="{color}"/>'
         )
         parts.append(
-            f'<text x="{x+w*0.58+18}" y="{legend_y}" font-family="{FONT_HEAD}" '
-            f'font-size="12" font-weight="500" fill="{PALETTE["text"]}">{xml(lang)}</text>'
+            f'<text x="{legend_x+13}" y="{legend_y}" font-family="{FONT_HEAD}" '
+            f'font-size="9" font-weight="500" fill="{PALETTE["text"]}">{xml(lang)}</text>'
         )
         parts.append(
-            f'<text x="{x+w-16}" y="{legend_y}" font-family="{FONT_MONO}" '
-            f'font-size="12" fill="{PALETTE["muted"]}" text-anchor="end">{count}</text>'
+            f'<text x="{x+w-14}" y="{legend_y}" font-family="{FONT_MONO}" '
+            f'font-size="9" fill="{PALETTE["muted"]}" text-anchor="end">{count}</text>'
         )
-        legend_y += 24
+        legend_y += 27
         start_angle = end_angle
 
     return "".join(parts)
@@ -366,29 +374,16 @@ def _recent_table_panel(x, y, w, h, rows):
     return "".join(parts)
 
 
-def build_dashboard_svg(stats, topics, portrait_uri=None):
-    width, height = 1200, 830
-    portrait_uri = portrait_uri or portrait_data_uri()
+def build_dashboard_svg(stats, topics):
+    width, height = 1200, 680
     parts = [
         f'<svg width="{width}" height="{height}" viewBox="0 0 {width} {height}" '
         f'xmlns="http://www.w3.org/2000/svg">',
-        f'''<defs><linearGradient id="page" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#111210"/><stop offset="1" stop-color="#0b0e14"/></linearGradient><linearGradient id="teal" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#52cdb1"/><stop offset="1" stop-color="#70d8b3"/></linearGradient><clipPath id="portraitClip"><circle cx="1090" cy="86" r="36"/></clipPath></defs><rect width="{width}" height="{height}" rx="14" fill="url(#page)"/>''',
+        f'''<defs><linearGradient id="page" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#111210"/><stop offset="1" stop-color="#0b0e14"/></linearGradient><linearGradient id="teal" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#52cdb1"/><stop offset="1" stop-color="#70d8b3"/></linearGradient></defs><rect width="{width}" height="{height}" rx="14" fill="url(#page)"/>''',
     ]
 
-    # Editorial masthead with the profile portrait
-    parts.append(
-        f'<rect x="28" y="25" width="1144" height="122" rx="9" fill="#171815" stroke="#343431"/>'
-        f'<image href="{portrait_uri}" x="758" y="25" width="414" height="122" preserveAspectRatio="xMidYMid slice" opacity="0.80"/>'
-        f'<path d="M700 25H1172V147H700Z" fill="#111210" opacity="0.36"/>'
-        f'<text x="58" y="65" font-family="{FONT_MONO}" font-size="10" letter-spacing="2" fill="{PALETTE["accent4"]}">PORTFOLIO / DATA SCIENCE</text>'
-        f'<text x="58" y="103" font-family="Georgia, serif" font-size="31" fill="{PALETTE["text"]}">Learning in public.</text>'
-        f'<text x="58" y="132" font-family="Georgia, serif" font-size="25" fill="{PALETTE["text"]}">Building with data.</text>'
-        f'<circle cx="1090" cy="86" r="38" fill="#131922" stroke="#52cdb1" stroke-width="2"/>'
-        f'<image href="{portrait_uri}" x="1054" y="50" width="72" height="72" preserveAspectRatio="xMidYMid slice" clip-path="url(#portraitClip)"/>'
-    )
-
     # KPI row
-    kpi_y = 164
+    kpi_y = 24
     kpi_w = (width - 40 * 2 - 3 * 16) / 4
     kpis = [
         ("REPOSITORIES", stats["repos"], PALETTE["accent"]),
