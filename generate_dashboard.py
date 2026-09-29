@@ -215,7 +215,7 @@ def _panel_frame(x, y, w, h, title):
 
 
 def _progress_panel(x, y, w, h, topics):
-    parts = [_panel_frame(x, y, w, h, "LEARNING PROGRESS")]
+    parts = [_panel_frame(x, y, w, h, "PYTHON TOPICS · FILES")]
     if not topics:
         parts.append(
             f'<text x="{x+20}" y="{y+60}" font-family="Fira Code, monospace" '
@@ -248,7 +248,7 @@ def _progress_panel(x, y, w, h, topics):
     if len(topics) > len(visible_topics):
         parts.append(
             f'<text x="{x+20}" y="{y+h-14}" font-family="{FONT_HEAD}" font-size="8" '
-            f'fill="{PALETTE["muted"]}">Showing 6 of {len(topics)} topics · full tracker below</text>'
+            f'fill="{PALETTE["muted"]}">Showing 6 of {len(topics)} tracked topics</text>'
         )
     return "".join(parts)
 

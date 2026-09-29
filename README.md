@@ -20,32 +20,24 @@
 
 ---
 
-## Learning progress
+## Learning paths
 
-<!-- CHAPTER-TRACKER-START -->
-`████████████████████` **Fundamentals** (13 files)
-
-`███████████████░░░░░` **Working With Data** (10 files)
-
-`███░░░░░░░░░░░░░░░░░` **(a) Loops** (2 files)
-
-`███░░░░░░░░░░░░░░░░░` **(b)Patterns** (2 files)
-
-`███░░░░░░░░░░░░░░░░░` **Conditionals** (2 files)
-
-`███░░░░░░░░░░░░░░░░░` **Functions** (2 files)
-
-`███░░░░░░░░░░░░░░░░░` **OOP** (2 files)
-
-`███░░░░░░░░░░░░░░░░░` **ExceptionHandling** (2 files)
-
-`███░░░░░░░░░░░░░░░░░` **Module&Imports** (2 files)
-
-`███░░░░░░░░░░░░░░░░░` **FileHandling** (2 files)
-
-`███░░░░░░░░░░░░░░░░░` **Comprehensions** (2 files)
-
-`███░░░░░░░░░░░░░░░░░` **Iterators&Generators** (2 files)
-
-`███░░░░░░░░░░░░░░░░░` **Working With Packages & VirtualEnvironment** (2 files)
-<!-- CHAPTER-TRACKER-END -->
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🐍 Python Foundations</h3>
+      <p>My main learning hub for Python fundamentals, working with data, and hands-on practice.</p>
+      <p><a href="https://github.com/Hanish-commits/DataScienceBy-Hanish"><strong>Explore the Python hub →</strong></a></p>
+    </td>
+    <td width="50%" valign="top">
+      <h3>🐼 Pandas Practice</h3>
+      <p>A focused track for notebooks, exercises, and Pandas data analysis.</p>
+      <p>
+        <a href="https://github.com/Hanish-commits/Pandas_Lessons">Pandas Lessons</a> ·
+        <a href="https://github.com/Hanish-commits/Pandas_Practice01">Practice 01</a> ·
+        <a href="https://github.com/Hanish-commits/Pandas_Practice02">Practice 02</a> ·
+        <a href="https://github.com/Hanish-commits/Pandas_Practice03">Practice 03</a>
+      </p>
+    </td>
+  </tr>
+</table>
