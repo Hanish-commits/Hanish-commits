@@ -6,7 +6,7 @@
   <img alt="Hanish Sharma — Data Science Enthusiast" src="https://raw.githubusercontent.com/Hanish-commits/Hanish-commits/main/assets/portfolio-hero-dark.svg" width="100%">
 </picture>
 
-[GitHub](https://github.com/Hanish-commits) · [Data science learning repo](https://github.com/Hanish-commits/DataScienceBy-Hanish) · **Python · Data analysis**
+<p align="center">Learning Python and exploring data science through hands-on projects.</p>
 
 </div>
 
