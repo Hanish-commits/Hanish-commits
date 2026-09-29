@@ -49,8 +49,8 @@ def xml(value):
 
 
 def portrait_data_uri():
-    """Embed the profile portrait so README SVGs remain self-contained."""
-    with open("assets/hanish-profile.jpg", "rb") as photo:
+    """Embed the portfolio banner so README SVGs remain self-contained."""
+    with open("assets/portfolio-banner.jpeg", "rb") as photo:
         encoded = base64.b64encode(photo.read()).decode("ascii")
     return f"data:image/jpeg;base64,{encoded}"
 
@@ -189,16 +189,11 @@ def update_readme(tracker_md):
 # ---------------------------------------------------------------------------
 
 def build_portfolio_hero_svg(theme="dark", portrait_uri=None):
-    """Create the portrait-led, self-contained hero used in the profile README."""
+    """Create a full-width hero while preserving the supplied banner's aspect ratio."""
     portrait_uri = portrait_uri or portrait_data_uri()
-    if theme == "light":
-        bg, fg, muted, overlay = "#eeece6", "#181916", "#5f625d", "#eeece6"
-    else:
-        bg, fg, muted, overlay = "#111210", "#f2f0e9", "#c0beb5", "#111210"
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="270" viewBox="0 0 1200 270">
-<defs><linearGradient id="fade" x1="0" y1="0" x2="1" y2="0"><stop stop-color="{overlay}"/><stop offset=".42" stop-color="{overlay}" stop-opacity=".96"/><stop offset=".76" stop-color="{overlay}" stop-opacity=".20"/><stop offset="1" stop-color="{overlay}" stop-opacity=".05"/></linearGradient><linearGradient id="bottom" x1="0" y1="0" x2="0" y2="1"><stop offset=".45" stop-color="{bg}" stop-opacity="0"/><stop offset="1" stop-color="{bg}" stop-opacity=".45"/></linearGradient></defs>
-<rect width="1200" height="270" rx="12" fill="{bg}"/><image href="{portrait_uri}" x="520" y="0" width="680" height="270" preserveAspectRatio="xMidYMid slice"/><rect width="1200" height="270" rx="12" fill="url(#fade)"/><rect width="1200" height="270" rx="12" fill="url(#bottom)"/>
-<text x="64" y="72" font-family="monospace" font-size="10" letter-spacing="2.5" fill="{PALETTE['accent4']}">PORTFOLIO / DATA SCIENCE</text><text x="60" y="137" font-family="Georgia,serif" font-size="47" fill="{fg}">Learning in public.</text><text x="60" y="190" font-family="Georgia,serif" font-size="47" fill="{fg}">Building with data.</text><text x="64" y="231" font-family="monospace" font-size="10" letter-spacing="2" fill="{muted}">HANISH SHARMA · PYTHON &amp; DATA SCIENCE</text></svg>'''
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="732" viewBox="0 0 1024 732">
+<image href="{portrait_uri}" x="0" y="0" width="1024" height="732" preserveAspectRatio="none"/>
+</svg>'''
 
 
 def _kpi_card(x, y, w, h, label, value, color):

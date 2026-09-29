@@ -6,6 +6,7 @@ on:
     paths:
       - "generate_dashboard.py"
       - "assets/hanish-profile.jpg"
+      - "assets/portfolio-banner.jpeg"
       - ".github/workflows/update-dashboard.yml"
   schedule:
     - cron: "0 3 * * *"

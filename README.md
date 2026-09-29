@@ -3,7 +3,7 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Hanish-commits/Hanish-commits/main/assets/portfolio-hero-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/Hanish-commits/Hanish-commits/main/assets/portfolio-hero-light.svg">
-  <img alt="Hanish Sharma — Learning in public. Building with data." src="https://raw.githubusercontent.com/Hanish-commits/Hanish-commits/main/assets/portfolio-hero-dark.svg" width="100%">
+  <img alt="Hanish Sharma — Data Science Enthusiast" src="https://raw.githubusercontent.com/Hanish-commits/Hanish-commits/main/assets/portfolio-hero-dark.svg" width="100%">
 </picture>
 
 [GitHub](https://github.com/Hanish-commits) · [Data science learning repo](https://github.com/Hanish-commits/DataScienceBy-Hanish) · **Python · Data analysis**
